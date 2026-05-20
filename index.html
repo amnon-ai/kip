@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KIP — The screenless way to think.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbfbfd;
+    --bg-elev: #ffffff;
+    --bg-soft: #f5f5f7;
+    --ink: #1d1d1f;
+    --ink-soft: #6e6e73;
+    --ink-faint: #a1a1a6;
+    --line: #e6e6eb;
+    --accent: #0a0a0a;
+    --pill: #f2f2f4;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 10px 40px -10px rgba(0,0,0,0.08);
+    --shadow-lg: 0 30px 80px -20px rgba(0,0,0,0.12);
+    --display: 'Fraunces', 'Times New Roman', serif;
+    --body: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Product color swatches */
+    --c-black: #1a1a1c;
+    --c-navy: #1f3a5f;
+    --c-white: #f5f5f7;
+    --c-sage: #b4c4a8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: #1d1d1f; color: #fff; }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    background: rgba(251, 251, 253, 0.72);
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 16px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .logo span { font-style: italic; font-weight: 300; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    color: var(--ink-soft); text-decoration: none;
+    font-size: 13px; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta {
+    background: var(--ink); color: #fff;
+    padding: 8px 18px; border-radius: 980px;
+    font-size: 13px; font-weight: 500;
+    text-decoration: none;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .nav-cta:hover { background: #000; transform: translateY(-1px); }
+  @media (max-width: 720px) {
+    .nav-links { display: none; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 160px 28px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px;
+    background: var(--pill);
+    border-radius: 980px;
+    font-size: 12px; font-weight: 500;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.1s ease forwards;
+  }
+  .hero-tag .live-dot { width: 6px; height: 6px; background: #ff3b30; border-radius: 50%; animation: blink 1.6s ease-in-out infinite; }
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(48px, 8vw, 96px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    max-width: 900px;
+    margin: 0 auto 24px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.25s ease forwards;
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--ink-soft);
+  }
+  .hero-sub {
+    font-size: clamp(17px, 2vw, 21px);
+    color: var(--ink-soft);
+    max-width: 580px;
+    margin: 0 auto 44px;
+    font-weight: 400;
+    line-height: 1.45;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.4s ease forwards;
+  }
+  .hero-cta-row {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.55s ease forwards;
+  }
+  .btn-primary, .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px;
+    border-radius: 980px;
+    font-size: 15px; font-weight: 500;
+    text-decoration: none;
+    transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+    border: none; cursor: pointer;
+    font-family: var(--body);
+  }
+  .btn-primary {
+    background: var(--ink); color: #fff;
+    box-shadow: 0 8px 24px -6px rgba(0,0,0,0.2);
+  }
+  .btn-primary:hover { background: #000; transform: translateY(-2px); box-shadow: 0 12px 32px -6px rgba(0,0,0,0.25); }
+  .btn-secondary {
+    background: transparent; color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn-secondary:hover { background: var(--bg-soft); }
+  .hero-meta {
+    font-size: 13px; color: var(--ink-faint);
+    opacity: 0;
+    animation: fadeUp 0.9s 0.7s ease forwards;
+  }
+
+  /* Hero product showcase */
+  .hero-product {
+    margin: 60px auto 0;
+    max-width: 900px;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 1.1s 0.85s ease forwards;
+  }
+  .hero-product-stage {
+    aspect-ratio: 16/11;
+    background: linear-gradient(180deg, #f5f5f7 0%, #ececef 100%);
+    border-radius: 28px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-product-img {
+    height: 92%;
+    max-height: 560px;
+    object-fit: contain;
+    filter: drop-shadow(0 30px 50px rgba(0,0,0,0.18));
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Floating dimension callout */
+  .dim-label {
+    position: absolute;
+    font-size: 11px; font-weight: 500;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .dim-label.top { top: 24px; left: 32px; }
+  .dim-label.bottom { bottom: 24px; right: 32px; }
+
+  /* Color swatches under hero */
+  .color-picker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 28px;
+    opacity: 0;
+    animation: fadeUp 0.9s 1s ease forwards;
+  }
+  .color-picker-label {
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-right: 8px;
+  }
+  .swatch {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent;
+    position: relative;
+  }
+  .swatch:hover { transform: scale(1.15); }
+  .swatch.active {
+    border-color: var(--ink);
+    box-shadow: 0 0 0 4px var(--bg);
+  }
+  .swatch.s-black { background: var(--c-black); }
+  .swatch.s-navy { background: var(--c-navy); }
+  .swatch.s-white { background: var(--c-white); border: 2px solid var(--line); }
+  .swatch.s-white.active { border-color: var(--ink); }
+  .swatch.s-sage { background: var(--c-sage); }
+
+  /* ---------- Section base ---------- */
+  section { padding: 120px 28px; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .section-tag {
+    font-size: 12px; font-weight: 500;
+    color: var(--ink-soft);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .section-h {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(36px, 5.5vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+    max-width: 900px;
+  }
+  .section-h em { font-style: italic; font-weight: 300; color: var(--ink-soft); }
+  .section-sub {
+    font-size: clamp(17px, 1.8vw, 19px);
+    color: var(--ink-soft);
+    max-width: 640px;
+    line-height: 1.5;
+  }
+
+  /* ---------- Problem section ---------- */
+  .problem {
+    background: var(--ink);
+    color: #fff;
+    padding: 140px 28px;
+    text-align: center;
+  }
+  .problem .section-h { color: #fff; margin-left: auto; margin-right: auto; }
+  .problem .section-h em { color: rgba(255,255,255,0.5); }
+  .problem-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 48px;
+    max-width: 1000px;
+    margin: 80px auto 0;
+  }
+  .stat-num {
+    font-family: var(--display);
+    font-size: clamp(56px, 7vw, 88px);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .stat-label {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.4;
+  }
+
+  /* ---------- Feature grid ---------- */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 20px;
+    margin-top: 64px;
+  }
+  .feature {
+    background: var(--bg-elev);
+    border-radius: 24px;
+    padding: 40px;
+    border: 1px solid var(--line);
+    transition: transform 0.4s, box-shadow 0.4s;
+  }
+  .feature:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .feature.lg { grid-column: span 7; min-height: 480px; display: flex; flex-direction: column; justify-content: space-between; }
+  .feature.md { grid-column: span 5; min-height: 480px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; position: relative; padding: 40px 0 0; }
+  .feature.md .feature-text { padding: 0 40px; }
+  .feature.md .feature-img-wrap {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: linear-gradient(180deg, #fafafc 0%, #ececef 100%);
+    margin: 32px 0 0;
+    padding: 20px 0 0;
+    overflow: hidden;
+  }
+  .feature.md .feature-img-wrap img {
+    max-height: 340px;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.15));
+  }
+  .feature.sm { grid-column: span 4; min-height: 360px; display: flex; flex-direction: column; justify-content: space-between; }
+  .feature h3 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .feature p {
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .feature-visual {
+    margin-top: 32px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+  }
+  @media (max-width: 880px) {
+    .feature.lg, .feature.md, .feature.sm { grid-column: span 12; min-height: 320px; }
+  }
+
+  /* Visual elements inside features */
+  .vis-wave {
+    width: 100%;
+    max-width: 320px;
+    height: 80px;
+  }
+  .vis-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 360px;
+  }
+  .cat-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--bg-soft);
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .cat-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+
+  /* ---------- Color showcase section ---------- */
+  .colors {
+    background: var(--bg-soft);
+    text-align: center;
+  }
+  .colors-hero-img {
+    width: 100%;
+    max-width: 1100px;
+    margin: 64px auto 0;
+    display: block;
+    border-radius: 28px;
+    overflow: hidden;
+  }
+  .colors-hero-img img {
+    width: 100%;
+    display: block;
+  }
+  .color-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+  }
+  @media (max-width: 880px) {
+    .color-cards { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .color-cards { grid-template-columns: 1fr; }
+  }
+  .color-card {
+    background: var(--bg-elev);
+    border-radius: 20px;
+    padding: 24px 20px;
+    text-align: center;
+    border: 1px solid var(--line);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .color-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .color-card-swatch {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .color-card h4 {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .color-card p {
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- Holders / Variants grid ---------- */
+  .variants-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 64px;
+  }
+  @media (max-width: 760px) {
+    .variants-grid { grid-template-columns: 1fr; }
+  }
+  .variant-card {
+    background: var(--bg-elev);
+    border-radius: 24px;
+    overflow: hidden;
+    transition: transform 0.4s;
+    border: 1px solid var(--line);
+  }
+  .variant-card:hover { transform: translateY(-6px); }
+  .variant-img {
+    aspect-ratio: 4/3;
+    background: linear-gradient(180deg, #fafafc 0%, #efeff2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .variant-img.dark {
+    background: linear-gradient(180deg, #1a1a1c 0%, #0a0a0a 100%);
+  }
+  .variant-img img {
+    height: 85%;
+    object-fit: contain;
+    filter: drop-shadow(0 12px 24px rgba(0,0,0,0.15));
+  }
+  .variant-info {
+    padding: 24px 28px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .variant-name {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .variant-desc {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .variant-price {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .variant-badge {
+    position: absolute;
+    top: 16px; left: 16px;
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 980px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .variant-badge.dark {
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    backdrop-filter: blur(8px);
+  }
+
+  /* ---------- How it works ---------- */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 64px;
+  }
+  @media (max-width: 760px) {
+    .steps { grid-template-columns: 1fr; }
+  }
+  .step {
+    padding: 40px 32px;
+    border-top: 1px solid var(--ink);
+  }
+  .step-num {
+    font-family: var(--display);
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 40px;
+    letter-spacing: 0.04em;
+  }
+  .step h4 {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .step p {
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  /* ---------- Privacy ---------- */
+  .privacy {
+    background: var(--ink);
+    color: #fff;
+    text-align: center;
+  }
+  .privacy .section-h { color: #fff; margin-left: auto; margin-right: auto; }
+  .privacy .section-h em { color: rgba(255,255,255,0.5); }
+  .privacy .section-sub { color: rgba(255,255,255,0.7); margin: 0 auto 48px; }
+  .privacy-points {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 32px;
+    max-width: 900px;
+    margin: 64px auto 0;
+    text-align: left;
+  }
+  .priv-point {
+    padding: 28px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+  }
+  .priv-icon {
+    width: 28px; height: 28px;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+  .priv-point h5 {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .priv-point p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.5;
+  }
+
+  /* ---------- Testimonial / Social proof ---------- */
+  .quote {
+    text-align: center;
+    padding: 140px 28px;
+  }
+  .quote blockquote {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    max-width: 880px;
+    margin: 0 auto 32px;
+    font-style: italic;
+  }
+  .quote cite {
+    font-style: normal;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  /* ---------- Pre-order section ---------- */
+  .preorder {
+    padding: 120px 28px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
+  }
+  .preorder-card {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 56px 40px;
+    background: var(--bg-elev);
+    border-radius: 28px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--line);
+  }
+  .preorder-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    background: #fff0ed;
+    color: #ff3b30;
+    border-radius: 980px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .preorder-card h2 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(32px, 4.5vw, 48px);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .preorder-card h2 em { font-style: italic; font-weight: 300; color: var(--ink-soft); }
+  .preorder-card p {
+    color: var(--ink-soft);
+    font-size: 16px;
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+  .price-display {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .price-now {
+    font-family: var(--display);
+    font-size: 48px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .price-original {
+    font-size: 20px;
+    color: var(--ink-faint);
+    text-decoration: line-through;
+  }
+  .price-save {
+    background: var(--ink);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 980px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .preorder-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 40px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 980px;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: var(--body);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 10px 30px -8px rgba(0,0,0,0.3);
+    text-decoration: none;
+  }
+  .preorder-cta:hover { background: #000; transform: translateY(-2px); box-shadow: 0 14px 36px -8px rgba(0,0,0,0.35); }
+
+  .perks {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .perks span { display: inline-flex; align-items: center; gap: 6px; }
+  .perks svg { width: 12px; height: 12px; }
+
+  .preorder-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 28px;
+    padding: 8px 16px;
+    background: var(--bg-soft);
+    border-radius: 980px;
+  }
+  .live-dot {
+    width: 6px; height: 6px;
+    background: #00c853;
+    border-radius: 50%;
+    animation: blink 1.6s ease-in-out infinite;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* Timeline display */
+  .timeline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 24px 0 16px;
+    flex-wrap: wrap;
+  }
+  .timeline-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .timeline-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+  .timeline-dot.faint { background: var(--ink-faint); }
+  .timeline-arrow {
+    color: var(--ink-faint);
+    font-size: 12px;
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq {
+    background: var(--bg);
+  }
+  .faq-list {
+    max-width: 760px;
+    margin: 64px auto 0;
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--line);
+    padding: 24px 0;
+    cursor: pointer;
+  }
+  .faq-q {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .faq-q::after {
+    content: '+';
+    font-size: 24px;
+    font-weight: 300;
+    transition: transform 0.3s;
+    color: var(--ink-soft);
+  }
+  .faq-item.open .faq-q::after {
+    transform: rotate(45deg);
+  }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .faq-item.open .faq-a {
+    max-height: 320px;
+    padding-top: 16px;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 60px 28px 40px;
+    border-top: 1px solid var(--line);
+    background: var(--bg-soft);
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+  .footer-inner a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    margin-right: 24px;
+  }
+  .footer-inner a:hover { color: var(--ink); }
+
+  /* ---------- Animations ---------- */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="logo">KIP<span>.</span></div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#colors">Colors</a>
+      <a href="#how">How it works</a>
+      <a href="#privacy">Privacy</a>
+    </div>
+    <a href="#preorder" class="nav-cta">Pre-order</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-tag"><span class="live-dot"></span> Pre-orders open · First batch ships Spring 2026</div>
+  <h1>Think out loud.<br><em>Never look down again.</em></h1>
+  <p class="hero-sub">KIP is a screenless AI companion the size of a coin. Click. Speak. Done. Your phone organizes the rest.</p>
+  <div class="hero-cta-row">
+    <a href="#preorder" class="btn-primary">Pre-order KIP — $149
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+    <a href="#how" class="btn-secondary">Watch how it works</a>
+  </div>
+  <div class="hero-meta">Authorized today · Charged only when shipped · 60-day returns</div>
+
+  <!-- Hero product visualization with real image -->
+  <div class="hero-product">
+    <div class="hero-product-stage">
+      <span class="dim-label top">Dimensions · 31.9 × 8 mm</span>
+      <span class="dim-label bottom">Weight · 11g</span>
+      <img id="hero-img" src="images/kip-navy.png" alt="KIP — Navy" class="hero-product-img">
+    </div>
+    <div class="color-picker">
+      <span class="color-picker-label">Choose color:</span>
+      <div class="swatch s-black" data-img="images/kip-black.png" data-color="Black"></div>
+      <div class="swatch s-navy active" data-img="images/kip-navy.png" data-color="Navy"></div>
+      <div class="swatch s-white" data-img="images/kip-white.png" data-color="White"></div>
+      <div class="swatch s-sage" data-img="images/kip-sage.png" data-color="Sage"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROBLEM ============ -->
+<section class="problem">
+  <div class="container">
+    <p class="section-tag" style="color: rgba(255,255,255,0.6);">The problem</p>
+    <h2 class="section-h">You picked up your phone to write one thought.<br><em>40 minutes later, you're still scrolling.</em></h2>
+    <div class="problem-stats">
+      <div>
+        <div class="stat-num">4h 37m</div>
+        <div class="stat-label">average daily screen time on a phone — most of it unintentional</div>
+      </div>
+      <div>
+        <div class="stat-num">96×</div>
+        <div class="stat-label">times the average person unlocks their phone each day</div>
+      </div>
+      <div>
+        <div class="stat-num">73%</div>
+        <div class="stat-label">of ideas are forgotten before they're ever written down</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section id="features">
+  <div class="container">
+    <p class="section-tag">What it does</p>
+    <h2 class="section-h">One button.<br><em>Infinite cognitive clarity.</em></h2>
+    <p class="section-sub">KIP pairs a beautifully engineered piece of hardware with an AI brain that knows exactly where every thought belongs.</p>
+
+    <div class="features">
+      <!-- Big feature: AI Filing -->
+      <div class="feature lg">
+        <div>
+          <h3>Mind-filing, automatic.</h3>
+          <p>Talk like a human. KIP's AI deconstructs every messy thought and files it precisely — tasks become tasks, ideas become ideas, feelings become a journal. You just speak.</p>
+        </div>
+        <div class="feature-visual">
+          <div class="vis-categories">
+            <div class="cat-pill"><span class="cat-dot" style="background:#FF6B6B"></span>Task · Buy oat milk tomorrow before 10am</div>
+            <div class="cat-pill"><span class="cat-dot" style="background:#4ECDC4"></span>Idea · Pitch deck angle: "operator-built"</div>
+            <div class="cat-pill"><span class="cat-dot" style="background:#FFD93D"></span>Journal · Felt anxious before the call</div>
+            <div class="cat-pill"><span class="cat-dot" style="background:#A78BFA"></span>Reminder · Call mom on Sunday</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product photo feature -->
+      <div class="feature md">
+        <div class="feature-text">
+          <h3>One satisfying click.</h3>
+          <p>Push-to-talk only. KIP records when you press, and never when you don't. Privacy by hardware design.</p>
+        </div>
+        <div class="feature-img-wrap">
+          <img src="images/kip-black.png" alt="KIP Black">
+        </div>
+      </div>
+
+      <!-- Mic -->
+      <div class="feature sm">
+        <div>
+          <h3>Studio-grade voice capture.</h3>
+          <p>Directional AI mic isolates your voice from wind, traffic, and café noise. Speak naturally — KIP hears only you.</p>
+        </div>
+        <div class="feature-visual">
+          <svg class="vis-wave" viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" stroke="#1d1d1f" stroke-width="2" stroke-linecap="round">
+              <line x1="20" y1="40" x2="20" y2="40"/>
+              <line x1="35" y1="30" x2="35" y2="50"/>
+              <line x1="50" y1="20" x2="50" y2="60"/>
+              <line x1="65" y1="10" x2="65" y2="70"/>
+              <line x1="80" y1="25" x2="80" y2="55"/>
+              <line x1="95" y1="15" x2="95" y2="65"/>
+              <line x1="110" y1="5" x2="110" y2="75"/>
+              <line x1="125" y1="20" x2="125" y2="60"/>
+              <line x1="140" y1="30" x2="140" y2="50"/>
+              <line x1="155" y1="10" x2="155" y2="70"/>
+              <line x1="170" y1="25" x2="170" y2="55"/>
+              <line x1="185" y1="15" x2="185" y2="65"/>
+              <line x1="200" y1="5" x2="200" y2="75"/>
+              <line x1="215" y1="20" x2="215" y2="60"/>
+              <line x1="230" y1="30" x2="230" y2="50"/>
+              <line x1="245" y1="35" x2="245" y2="45"/>
+              <line x1="260" y1="38" x2="260" y2="42"/>
+              <line x1="275" y1="39" x2="275" y2="41"/>
+              <line x1="290" y1="40" x2="290" y2="40"/>
+              <line x1="305" y1="40" x2="305" y2="40"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Earphones -->
+      <div class="feature sm">
+        <div>
+          <h3>Private replies in your ear.</h3>
+          <p>KIP routes the AI's response straight to your AirPods. No screen, no awkward speaker — just answers, only you hear.</p>
+        </div>
+        <div class="feature-visual">
+          <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+            <circle cx="35" cy="60" r="14" fill="#1d1d1f"/>
+            <rect x="32" y="60" width="6" height="30" rx="3" fill="#1d1d1f"/>
+            <circle cx="85" cy="60" r="14" fill="#1d1d1f"/>
+            <rect x="82" y="60" width="6" height="30" rx="3" fill="#1d1d1f"/>
+            <path d="M 50 60 Q 60 30 70 60" stroke="#1d1d1f" stroke-width="1.5" fill="none" stroke-dasharray="3 3"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Daily digest -->
+      <div class="feature sm">
+        <div>
+          <h3>The Daily Digest.</h3>
+          <p>Every evening, KIP compiles your day into a clean review — breakthroughs, decisions, tomorrow's priorities. All without lifting a finger.</p>
+        </div>
+        <div class="feature-visual">
+          <svg width="140" height="120" viewBox="0 0 140 120" fill="none">
+            <rect x="20" y="15" width="100" height="90" rx="8" fill="#f5f5f7" stroke="#1d1d1f" stroke-width="1.5"/>
+            <line x1="30" y1="32" x2="80" y2="32" stroke="#1d1d1f" stroke-width="2"/>
+            <line x1="30" y1="45" x2="100" y2="45" stroke="#d1d1d6" stroke-width="1.5"/>
+            <line x1="30" y1="55" x2="95" y2="55" stroke="#d1d1d6" stroke-width="1.5"/>
+            <line x1="30" y1="65" x2="100" y2="65" stroke="#d1d1d6" stroke-width="1.5"/>
+            <line x1="30" y1="80" x2="60" y2="80" stroke="#1d1d1f" stroke-width="2"/>
+            <line x1="30" y1="92" x2="90" y2="92" stroke="#d1d1d6" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COLORS ============ -->
+<section id="colors" class="colors">
+  <div class="container">
+    <p class="section-tag">The collection</p>
+    <h2 class="section-h" style="margin-left: auto; margin-right: auto;">Four colors.<br><em>One for every kind of carry.</em></h2>
+    <p class="section-sub" style="margin-left: auto; margin-right: auto;">Each KIP comes in a soft-touch silicone shell with an integrated carabiner — built to slip onto keys, bags, or belt loops without thinking about it.</p>
+
+    <div class="colors-hero-img">
+      <img src="images/kip-all.png" alt="KIP — All four colors">
+    </div>
+
+    <div class="color-cards">
+      <div class="color-card">
+        <div class="color-card-swatch" style="background: var(--c-black);"></div>
+        <h4>Midnight</h4>
+        <p>Classic black</p>
+      </div>
+      <div class="color-card">
+        <div class="color-card-swatch" style="background: var(--c-navy);"></div>
+        <h4>Atlantic</h4>
+        <p>Deep navy</p>
+      </div>
+      <div class="color-card">
+        <div class="color-card-swatch" style="background: var(--c-white); box-shadow: 0 4px 12px rgba(0,0,0,0.08), inset 0 0 0 1px var(--line);"></div>
+        <h4>Cloud</h4>
+        <p>Crisp white</p>
+      </div>
+      <div class="color-card">
+        <div class="color-card-swatch" style="background: var(--c-sage);"></div>
+        <h4>Sage</h4>
+        <p>Soft green</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VARIANT SHOWCASE ============ -->
+<section>
+  <div class="container">
+    <p class="section-tag">Up close</p>
+    <h2 class="section-h">Engineered as an object,<br><em>not as a gadget.</em></h2>
+    <p class="section-sub">A soft-touch silicone shell. A precision-machined center button. An anodized steel carabiner. KIP looks like something you'd actually want to wear.</p>
+
+    <div class="variants-grid">
+      <div class="variant-card">
+        <div class="variant-img">
+          <span class="variant-badge">MIDNIGHT</span>
+          <img src="images/kip-black.png" alt="KIP Black">
+        </div>
+        <div class="variant-info">
+          <div>
+            <div class="variant-name">KIP Midnight</div>
+            <div class="variant-desc">Matte black silicone. The everyday classic — disappears against any keyring.</div>
+          </div>
+          <div class="variant-price">$149</div>
+        </div>
+      </div>
+
+      <div class="variant-card">
+        <div class="variant-img">
+          <span class="variant-badge">ATLANTIC</span>
+          <img src="images/kip-navy.png" alt="KIP Navy">
+        </div>
+        <div class="variant-info">
+          <div>
+            <div class="variant-name">KIP Atlantic</div>
+            <div class="variant-desc">Deep navy. Quiet sophistication for executives, founders, professionals.</div>
+          </div>
+          <div class="variant-price">$149</div>
+        </div>
+      </div>
+
+      <div class="variant-card">
+        <div class="variant-img dark">
+          <span class="variant-badge dark">CLOUD</span>
+          <img src="images/kip-white.png" alt="KIP White">
+        </div>
+        <div class="variant-info">
+          <div>
+            <div class="variant-name">KIP Cloud</div>
+            <div class="variant-desc">Crisp white with a graphite button. The minimalist's choice.</div>
+          </div>
+          <div class="variant-price">$149</div>
+        </div>
+      </div>
+
+      <div class="variant-card">
+        <div class="variant-img">
+          <span class="variant-badge">SAGE</span>
+          <img src="images/kip-sage.png" alt="KIP Sage">
+        </div>
+        <div class="variant-info">
+          <div>
+            <div class="variant-name">KIP Sage</div>
+            <div class="variant-desc">Soft green. The quiet rebel — a hint of color without the noise.</div>
+          </div>
+          <div class="variant-price">$149</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how">
+  <div class="container">
+    <p class="section-tag">How it works</p>
+    <h2 class="section-h">Three seconds.<br><em>Zero friction.</em></h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01 ——</div>
+        <h4>Click.</h4>
+        <p>Press the button. A subtle haptic tells you KIP is listening. No app to open. No screen to wake.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02 ——</div>
+        <h4>Speak.</h4>
+        <p>Talk like you're talking to yourself. Tasks, ideas, feelings, half-formed plans. KIP captures all of it.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03 ——</div>
+        <h4>Forget.</h4>
+        <p>Let it go. Your phone organizes everything into the right place. At night, your Daily Digest is waiting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUOTE ============ -->
+<section class="quote">
+  <div class="container">
+    <blockquote>"I haven't lost an idea in three months. I didn't realize how much I was losing until KIP kept catching it."</blockquote>
+    <cite>— EARLY ACCESS USER, FOUNDER</cite>
+  </div>
+</section>
+
+<!-- ============ PRIVACY ============ -->
+<section id="privacy" class="privacy">
+  <div class="container">
+    <p class="section-tag" style="color: rgba(255,255,255,0.6);">Privacy</p>
+    <h2 class="section-h">Your thoughts are yours.<br><em>By architecture, not by promise.</em></h2>
+    <p class="section-sub">KIP was built around one assumption: nobody — not us, not anyone — should see your raw thoughts. So we engineered it that way.</p>
+
+    <div class="privacy-points">
+      <div class="priv-point">
+        <svg class="priv-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <h5>Push to talk, always.</h5>
+        <p>KIP only records when the button is held. No wake words. No ambient listening. Hardware-enforced.</p>
+      </div>
+      <div class="priv-point">
+        <svg class="priv-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6Z"/></svg>
+        <h5>AES-256 local encryption.</h5>
+        <p>Your raw thoughts live encrypted on your phone's secure chip. Military-grade. Never leaves the device.</p>
+      </div>
+      <div class="priv-point">
+        <svg class="priv-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 10c0-5-3-7-6-7s-6 2-6 7c-3 0-4 2-4 4 0 3 2 5 5 5h10c3 0 5-2 5-5 0-2-1-4-4-4Z"/><path d="m9 14 2 2 4-4"/></svg>
+        <h5>Zero cloud logs.</h5>
+        <p>The AI sees text once, returns insight, and forgets. No conversation history stored on our servers. Ever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRE-ORDER ============ -->
+<section id="preorder" class="preorder">
+  <div class="preorder-card">
+    <div class="preorder-badge"><span class="live-dot" style="background:#ff3b30;"></span> Early bird pricing · Ends soon</div>
+    <h2>Reserve your KIP.<br><em>Pay nothing today.</em></h2>
+    <p>Lock in early-bird pricing now. Your card is authorized but only charged when KIP ships to you. Cancel anytime before then.</p>
+
+    <div class="price-display">
+      <span class="price-now">$149</span>
+      <span class="price-original">$199</span>
+      <span class="price-save">Save $50</span>
+    </div>
+
+    <a href="#" class="preorder-cta" id="preorderBtn">Reserve KIP now
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+
+    <div class="timeline">
+      <div class="timeline-item"><span class="timeline-dot"></span> Reserve today</div>
+      <span class="timeline-arrow">→</span>
+      <div class="timeline-item"><span class="timeline-dot faint"></span> Production update — Feb 2026</div>
+      <span class="timeline-arrow">→</span>
+      <div class="timeline-item"><span class="timeline-dot faint"></span> Ships Spring 2026</div>
+    </div>
+
+    <div class="perks">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg> $0 charged today</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg> Free worldwide shipping</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg> 60-day returns</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg> Cancel anytime</span>
+    </div>
+
+    <div class="preorder-count">
+      <span class="live-dot"></span>
+      <span><strong id="count">2,847</strong> people have reserved KIP</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq">
+  <div class="container">
+    <p class="section-tag">FAQ</p>
+    <h2 class="section-h" style="text-align: center; margin-left: auto; margin-right: auto;">Questions, <em>answered.</em></h2>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">When will I be charged?</div>
+        <div class="faq-a">When you reserve, we authorize your card but don't charge it. You're only charged when your KIP is ready to ship — currently estimated Spring 2026. You can cancel anytime before then with one click, no questions asked.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What if production is delayed?</div>
+        <div class="faq-a">We'll send you monthly progress updates with photos and timelines. If we miss our ship window, you get the option to cancel your reservation immediately. No charge happens until KIP physically ships.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I change colors after reserving?</div>
+        <div class="faq-a">Yes. You can swap colors anytime up until 7 days before your KIP enters production. We'll send a confirmation email 2 weeks before shipping for final color confirmation.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Does KIP work with my phone?</div>
+        <div class="faq-a">KIP works with any iPhone running iOS 16+ or Android phone running Android 12+. It pairs via Bluetooth 5.3 and connects to the KIP companion app, which is free.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Do I need a subscription?</div>
+        <div class="faq-a">No. The KIP app is free with your hardware purchase. You get unlimited recordings, full AI categorization, and Daily Digests at no extra cost. We may introduce optional premium features in the future, but everything you see today is included forever.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What's your return policy?</div>
+        <div class="faq-a">60-day returns, no questions asked. If KIP isn't the productivity revolution we promise, send it back for a full refund within 60 days of receiving it. We even cover return shipping.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How long does the battery last?</div>
+        <div class="faq-a">KIP holds approximately 2 weeks of typical use on a single charge (averaging 20 voice notes per day). It charges in 90 minutes via USB-C. We include a charging cable in the box.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Where do you ship?</div>
+        <div class="faq-a">Worldwide, free of charge. Shipping is included in your $149 price. We use tracked delivery via DHL or USPS depending on your region, typically arriving within 5-10 business days from dispatch.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <span class="logo" style="font-size: 18px;">KIP<span>.</span></span>
+      &nbsp;&nbsp; © 2026 — Designed quietly.
+    </div>
+    <div>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Refund Policy</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Color swatch picker
+  const swatches = document.querySelectorAll('.swatch');
+  const heroImg = document.getElementById('hero-img');
+  swatches.forEach(swatch => {
+    swatch.addEventListener('click', () => {
+      swatches.forEach(s => s.classList.remove('active'));
+      swatch.classList.add('active');
+      const newSrc = swatch.dataset.img;
+      heroImg.style.opacity = '0';
+      setTimeout(() => {
+        heroImg.src = newSrc;
+        heroImg.alt = `KIP — ${swatch.dataset.color}`;
+        heroImg.style.opacity = '1';
+      }, 200);
+    });
+  });
+  heroImg.style.transition = 'opacity 0.3s ease';
+
+  // Pre-order button (placeholder for Shopify redirect)
+  document.getElementById('preorderBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    // TODO: Replace with your Shopify product URL when ready
+    // window.location.href = 'https://your-store.myshopify.com/products/kip';
+    const btn = e.currentTarget;
+    const original = btn.innerHTML;
+    btn.innerHTML = '✓ Redirecting to checkout...';
+    btn.style.background = '#00c853';
+    setTimeout(() => {
+      btn.innerHTML = original;
+      btn.style.background = '';
+    }, 2500);
+  });
+
+  // Counter increment for social proof
+  let count = 2847;
+  const counter = document.getElementById('count');
+  setInterval(() => {
+    if (Math.random() > 0.6) {
+      count++;
+      counter.textContent = count.toLocaleString();
+    }
+  }, 5000);
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('open');
+    });
+  });
+
+  // Reveal on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('section').forEach(s => {
+    s.classList.add('reveal');
+    observer.observe(s);
+  });
+</script>
+
+</body>
+</html>
